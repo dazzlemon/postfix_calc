@@ -5,9 +5,10 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include <map>
+#include <functional>
 
-#include <iostream>
-
+//works only for ints
 class PostfixEvaluator {
 public:
 	std::string eval(const std::string& postfix) {
@@ -32,33 +33,21 @@ private:
 		ops.clear();
 		for (auto& token : postfix)
 			ops.push(try_stoi(token) ? __itoken : calc(token));
+		if (ops.size() > 1)
+			throw std::runtime_error("bad expression");
 		return std::to_string(ops.pop());
 	}
 
 	int calc(const std::string& op) {
-		int a, b, res;
+		int res;
 		try {
-			a = ops.pop();
-			b = ops.pop();
+			res = operators[op](ops.pop(), ops.pop());
+		}
+		catch (const ZeroExcept& e) {
+			throw std::runtime_error(e.what());
 		}
 		catch (...) {
 			throw std::runtime_error("bad expression");
-		}
-		switch (op[0]) {
-			case '+':
-				res = b + a;
-				break;
-			case '-':
-				res = b - a;
-				break;
-			case '*':
-				res = b * a;
-				break;
-			case '/':
-				if (a == 0)
-					throw std::runtime_error("division by zero");
-				res = b / a;
-				break;
 		}
 		return res;
 	}
@@ -75,4 +64,17 @@ private:
 
 	int __itoken;
 	Stack<int> ops;
+	std::map<std::string, std::function<int(int, int)>> operators = {
+		{"+", [](int a, int b) {return a + b;}},
+		{"-", [](int a, int b) {return a - b;}},
+		{"*", [](int a, int b) {return a * b;}},
+		{"/", [](int a, int b) {if (!b)
+						throw ZeroExcept();
+					return a / b;}}
+	};
+
+	class ZeroExcept : std::exception {
+	public:
+		const char* what() const noexcept {return "division by zero";}
+	};
 };
