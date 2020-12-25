@@ -22,7 +22,7 @@ int main() {
 		{"12 4 / 1 -",                     "2"},
 		{"12 4 1 - /",                     "4"},
 		{"15 7 1 1 + - / 3 * 2 1 1 + + -", "5"},
-		{"15 0 /",   "error: division by zero"},
+                {"15 0 /",   "error: division by zero"},
 		{"15 0 678 8", "error: bad expression"},
 		{"/ + * -",    "error: bad expression"}
 	};
