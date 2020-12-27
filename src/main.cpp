@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-int main() {
+void tests() {
 	PostfixEvaluator pe;
 	std::vector<std::pair<std::string, std::string>> tests = {
 		{"1 2 + 3 /",                      "1"},
@@ -38,4 +38,29 @@ int main() {
 		std::cout << (passed ? "TEST PASSED" : "TEST FAILED") << std::endl << std::endl;
 	}
 	std::cout << tests_passed << " out of " << tests.size() << " tests passed" << std::endl;
+}
+
+bool getCont() {
+	char cont;
+	do {
+	std::cout << "Do you want to continue?(y/n): ";
+	std::cin >> cont;
+	getchar();//skip enter
+	} while (cont != 'y' && cont != 'Y' && cont != 'N' && cont != 'n');
+	return cont == 'y' || cont == 'Y';
+}
+
+int main() {
+	//tests();
+
+	PostfixEvaluator pe;
+	std::string expr;
+	bool continue_ = true;
+
+	while(continue_) {
+		std::cout << "Input expression: " << std::endl;
+		std::getline(std::cin, expr);
+		std::cout << "Result: " << pe.eval(expr) << std::endl;
+		continue_ = getCont();
+	}
 }
